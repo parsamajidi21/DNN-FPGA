@@ -44,7 +44,7 @@ conda activate FPGA_NN
 
 
 
-
+![Diagram Image](./image/Drawing.png)
 
 
 
