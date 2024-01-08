@@ -18,6 +18,18 @@ You can check the [tutorial](https://github.com/fastmachinelearning/hls4ml-tutor
 feasible or maybe it is better to tackle the first option.
 
 
+### General Workflow to use HLS
+
+- Problem
+- Define your inputs & output
+	- They will translate as the parameters of your HLS top-level function
+- Write up your code
+- Test your C++ code
+- Synthesis, i.e. convert to VHDL code
+	- Optimise it to get the desired performance while staying in your HW limits
+- Test synthesised design
+- Export design, typically in Vivado IP (Intellectual Property) format
+- Implement in Vivado on actual FPGA
 ## Hardware Requirements
 - Arty A7-100T Artix-7 FPGA Development Board - PN: XC7A100TCSG324-1
 - A host computer running Windows or GNU/Linux
@@ -30,22 +42,21 @@ feasible or maybe it is better to tackle the first option.
 conda env create -f environment.yml
 conda activate FPGA_NN
 ```
-### General Workflow to use HLS
-- Problem
-- Define your inputs & output
-	- They will translate as the parameters of your HLS top-level function
-- Write up your code
-- Test your C++ code
-- Synthesis, i.e. convert to VHDL code
-	- Optimise it to get the desired performance while staying in your HW limits
-- Test synthesised design
-- Export design, typically in Vivado IP (Intellectual Property) format
-- Implement in Vivado on actual FPGA
 
 
 
 ![Diagram Image](./image/Drawing.png)
 
+### FIFO - First Input First Output
+The acronym FIFO stands for First In First Out. FIFOs are used everywhere in FPGA and ASIC designs, they are one of the basic building blocks. And they are very handy! FIFOs can be used for any of these purposes:
+- Crossing clock domains
+- Buffering data before sending it off chip (e.g. to DRAM or SRAM)
+- Buffering data for software to look at at some later time
+- Storing data for later processing
+
+A FIFO can be thought of a one-way tunnel that cars can drive through. At the end of the tunnel is a toll with a gate. Once the gate opens, the car can leave the tunnel. If that gate never opens and more cars keep entering the tunnel, eventually the tunnel will fill up with cars. This is called FIFO Overflow and in general it’s not a good thing. How deep the FIFO is can be thought of as the length of the tunnel. The deeper the FIFO, the more data can fit into it before it overflows. FIFOs also have a width, which represents the width of the data (in number of bits) that enters the FIFO. Below is an image of the basic interface of any FIFO. These signals will always be found when you look at any FIFO. Often there are more signals that add additional features, such as a count of the number of words in the FIFO. See the figure below:
+
+![Diagram Image](./image/Disegno.png)
 
 
 
