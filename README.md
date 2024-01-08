@@ -56,20 +56,14 @@ The acronym FIFO stands for First In First Out. FIFOs are used everywhere in FPG
 
 A FIFO can be thought of a one-way tunnel that cars can drive through. At the end of the tunnel is a toll with a gate. Once the gate opens, the car can leave the tunnel. If that gate never opens and more cars keep entering the tunnel, eventually the tunnel will fill up with cars. This is called FIFO Overflow and in general it’s not a good thing. How deep the FIFO is can be thought of as the length of the tunnel. The deeper the FIFO, the more data can fit into it before it overflows. FIFOs also have a width, which represents the width of the data (in number of bits) that enters the FIFO. Below is an image of the basic interface of any FIFO. These signals will always be found when you look at any FIFO. Often there are more signals that add additional features, such as a count of the number of words in the FIFO. See the figure below:
 
-![Diagram Image](./image/Disegno.png)
-
-
-
-
-
-
-
-
-
+![FIFO Diagram Image](./image/Disegno.png)
 
 
 ## Some expected errors
 if you have faced to a problem with jupyter notebook while creating the environment with hls4ml-tutorial, try the following command to have compatible version:
 ```
 pip install --upgrade notebook==6.4.12
-``` 
+```
+
+## Refrences
+[What is a FIFO in an FPGA](https://nandland.com/lesson-8-what-is-a-fifo/What%20is%20a%20FIFO%20in%20an%20FPGA) 
