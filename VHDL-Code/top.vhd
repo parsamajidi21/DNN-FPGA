@@ -4,10 +4,13 @@ use IEEE.NUMERIC_STD.ALL;
 
 
 entity top is
-
+  generic(
+    f_WIDTH : natural := 8;
+    f_DEPTH : natural := 16);
   port (
 
     CLK100MHZ    : in  std_logic;
+    reset   :   in std_logic;
     uart_txd_in  : in  std_logic;
     uart_rxd_out : out std_logic);
 
@@ -17,30 +20,39 @@ end entity top;
 
 architecture str of top is
   signal clock        : std_logic;
-  signal data_to_send : std_logic_vector(7 downto 0) := X"61";
+  --signal reset        : std_logic;
+  signal data_to_send: std_logic_vector(7 downto 0);
+  signal data_to_send_out : std_logic_vector(7 downto 0);
   signal data_valid   : std_logic;
   signal busy         : std_logic;
   signal uart_tx      : std_logic;
-  signal nn_in        : std_logic_vector(127 downto 0);
+  signal wr_enS       : std_logic;
+  signal wr_dtS       : std_logic_vector (f_WIDTH-1 downto 0);
+  signal full_fifoS   : std_logic;
+  signal rd_enS       : std_logic;
+  signal empty_fifoS   : std_logic;
+  signal fc1_input_V_s : std_logic_vector(127 downto 0);
   signal nn_out_0     : std_logic_vector(15 downto 0);
   signal nn_out_1     : std_logic_vector(15 downto 0);
   signal nn_out_2     : std_logic_vector(15 downto 0);
   signal nn_out_3     : std_logic_vector(15 downto 0);
   signal nn_out_4     : std_logic_vector(15 downto 0);
-  type in_nn_data is array (0 to 15) of std_logic_vector(7 downto 0);
-  type out_nn_data is array (0 to 9) of std_logic_vector(7 downto 0);
-  signal in_nn_data_arr : in_nn_data;
-  signal out_nn_data_arr : out_nn_data;
   signal ap_start : std_logic := '0' ; 
-  
-function to_slv(slvv : in_nn_data) return STD_LOGIC_VECTOR is
-  variable slv : STD_LOGIC_VECTOR((slvv'length * 8) - 1 downto 0);
-begin
-  for i in slvv'range loop
-    slv((i * 8) + 7 downto (i * 8))      := slvv(i);
-  end loop;
-  return slv;
-end function;
+
+
+  component FIFO is 
+  port (
+         f_RST : in std_logic;
+         f_CLK : in std_logic;
+        -- FIFO WRITE INTERFACE
+         f_WR_EN : in std_logic;
+         f_WR_DT : in std_logic_vector (f_WIDTH-1 downto 0);
+         f_FULL_FIFO : out std_logic;
+        -- FIFO READ INTERFACE
+         f_RD_EN : in std_logic;
+         f_RD_DT_128 : out std_logic_vector (f_DEPTH*f_WIDTH-1 downto 0);
+         f_EMPTY_FIFO : out std_logic);
+   end component FIFO;
 
   component myproject is
     port (
@@ -71,43 +83,9 @@ end function;
       valid         : out std_logic;
       received_data : out std_logic_vector(7 downto 0));
   end component uart_receiver;
+
+
 begin  -- architecture str
-
- main : process
-begin
-    split_in_nn : for i in 0 to 15 loop
-        in_nn_data_arr(i) <= nn_in((15-i) * 8 + 7 downto (15-i) * 8);
-    end loop split_in_nn;
-    
-    split_out_nn_0 : for j in 0 to 1 loop
-        out_nn_data_arr(j) <= nn_out_0((1-j) * 8 + 7 downto (1-j) * 8);   
-    end loop split_out_nn_0;
-
-    split_out_nn_1 : for j in 2 to 3 loop
-        out_nn_data_arr(j) <= nn_out_1((3-j) * 8 + 7 downto (3-j) * 8);   
-    end loop split_out_nn_1;
-
-    split_out_nn_2 : for j in 4 to 5 loop
-        out_nn_data_arr(j) <= nn_out_2((5-j) * 8 + 7 downto (5-j) * 8);   
-    end loop split_out_nn_2;
-
-    split_out_nn_3 : for j in 6 to 7 loop
-        out_nn_data_arr(j) <= nn_out_3((7-j) * 8 + 7 downto (7-j) * 8);   
-    end loop split_out_nn_3;
-
-    split_out_nn_4 : for j in 8 to 9 loop
-        out_nn_data_arr(j) <= nn_out_4((9-j) * 8 + 7 downto (9-j) * 8);   
-    end loop split_out_nn_4;
-    
-
-for x in 0 to 15 loop 
-     if rising_edge(CLK100MHZ) then
-        in_nn_data_arr(x) <= data_to_send;
-     end if;     
-end loop;
-
-nn_in <= to_slv(in_nn_data_arr);
-end process main;
 
   RX_1 : uart_receiver
     port map (
@@ -120,21 +98,30 @@ end process main;
     port map (
         ap_start => ap_start,
         ap_clk => CLK100MHZ,
-        fc1_input_V => nn_in,
+        fc1_input_V => fc1_input_V_s,
         layer13_out_0_V => nn_out_0,
         layer13_out_1_V => nn_out_1,
         layer13_out_2_V => nn_out_2,
         layer13_out_3_V => nn_out_3,
         layer13_out_4_V => nn_out_4);
- 
+  FIFO_1 : FIFO
+    port map (
+        f_CLK => clock,
+        f_RST => reset,
+        f_WR_EN => wr_enS,
+        f_WR_DT => data_to_send,
+        f_RD_EN => rd_enS,
+        f_FULL_FIFO => full_fifoS,
+        f_RD_DT_128 => fc1_input_V_s,
+        f_EMPTY_FIFO => empty_fifoS);
+         
   TX_1 : uart_transmitter
     port map (
       clock        => CLK100MHZ,
-      data_to_send => data_to_send,
+      data_to_send => data_to_send_out,
       data_valid   => data_valid,
       busy         => busy,
       uart_tx      => uart_rxd_out);
-      
-     
 
 end architecture str;
+
