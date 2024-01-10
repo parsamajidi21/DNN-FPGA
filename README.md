@@ -18,18 +18,6 @@ You can check the [tutorial](https://github.com/fastmachinelearning/hls4ml-tutor
 feasible or maybe it is better to tackle the first option.
 
 
-### General Workflow to use HLS
-
-- Problem
-- Define your inputs & output
-	- They will translate as the parameters of your HLS top-level function
-- Write up your code
-- Test your C++ code
-- Synthesis, i.e. convert to VHDL code
-	- Optimise it to get the desired performance while staying in your HW limits
-- Test synthesised design
-- Export design, typically in Vivado IP (Intellectual Property) format
-- Implement in Vivado on actual FPGA
 ## Hardware Requirements
 - Arty A7-100T Artix-7 FPGA Development Board - PN: XC7A100TCSG324-1
 - A host computer running Windows or GNU/Linux
@@ -43,9 +31,50 @@ conda env create -f environment.yml
 conda activate FPGA_NN
 ```
 
-
+### Flow of Project
 
 ![Diagram Image](./image/Drawing.png)
+
+
+### HLS-High Level Synthesis
+
+High-level synthesis (HLS), sometimes referred to as C synthesis, electronic system-level (ESL) synthesis, algorithmic synthesis, or behavioral synthesis, is an automated design process that takes an abstract behavioral specification of a digital system and finds a register-transfer level structure that realizes the given behavior.
+
+#### General Workflow to use HLS
+
+- Problem
+- Define your inputs & output
+        - They will translate as the parameters of your HLS top-level function
+- Write up your code
+- Test your C++ code
+- Synthesis, i.e. convert to VHDL code
+        - Optimise it to get the desired performance while staying in your HW limits
+- Test synthesised design
+- Export design, typically in Vivado IP (Intellectual Property) format
+- Implement in Vivado on actual FPGA
+
+#### hls4ml
+![hls4ml](./image/hls4ml_logo.png)
+[hls4ml](https://fastmachinelearning.org/hls4ml/#:~:text=hls4ml%20is%20a%20Python%20package,configured%20for%20your%20use%2Dcase!) is a Python package for machine learning inference in FPGAs. We create firmware implementations of machine learning algorithms using high level synthesis language (HLS). We translate traditional open-source machine learning package models into HLS that can be configured for your use-case!
+
+
+#### ap_ctrl_chain
+The following figure shows the behavior of the block-level handshake signals created by the ap_ctrl_chain control protocol for a sequential execution. In the following figure, the first transaction of the HLS design completes, and the second transaction starts immediately because ap_continue is High when ap_done is High. However, the design halts at the end of the second transaction until ap_continue is asserted High.
+<div style="text-align:center">
+  <img src="./image/ksy1542323312067.image" alt="Behavior of ap_ctrl_chain Interface">
+</div>
+
+### Neural Network
+
+### UART Implementation
+
+#### UART Transmitter
+![UART Transmitter](./image/UART_Transmitter.png)
+
+#### UART Receiver
+
+![UART_Receiver](./image/UART_Receiver.png)
+
 
 ### FIFO - First Input First Output
 The acronym FIFO stands for First In First Out. FIFOs are used everywhere in FPGA and ASIC designs, they are one of the basic building blocks. And they are very handy! FIFOs can be used for any of these purposes:
@@ -66,4 +95,6 @@ pip install --upgrade notebook==6.4.12
 ```
 
 ## Refrences
-[What is a FIFO in an FPGA](https://nandland.com/lesson-8-what-is-a-fifo/What%20is%20a%20FIFO%20in%20an%20FPGA) 
+[What is a FIFO in an FPGA](https://nandland.com/lesson-8-what-is-a-fifo/What%20is%20a%20FIFO%20in%20an%20FPGA)
+
+[Block Level Control Protocols](https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/Block-Level-Control-Protocols) 
