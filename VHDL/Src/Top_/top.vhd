@@ -5,8 +5,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity top is
   generic(
-    f_WIDTH : natural := 8;
-    f_DEPTH : natural := 16);
+    g_WIDTH : natural := 8;
+    g_DEPTH : natural := 16);
   port (
 
     CLK100MHZ    : in  std_logic;
@@ -22,11 +22,11 @@ architecture str of top is
   signal clock        : std_logic;
   signal received_data: std_logic_vector(7 downto 0);
   signal data_to_send : std_logic_vector(7 downto 0);
-  signal data_valid   : std_logic;
+  signal x_data_valid   : std_logic := '1';
   signal busy         : std_logic;
   signal uart_tx      : std_logic;
   signal f_WR_EN       : std_logic;
-  signal f_WR_DT       : std_logic_vector (f_WIDTH-1 downto 0);
+  signal f_WR_DT       : std_logic_vector (g_WIDTH-1 downto 0);
   signal f_FULL_FIFO   : std_logic;
   signal f_RD_EN       : std_logic;
   signal f_EMPTY_FIFO   : std_logic;
@@ -44,16 +44,19 @@ architecture str of top is
   component FIFO is 
 
   port (
-         f_RST : in std_logic;
-         f_CLK : in std_logic;
-        -- FIFO WRITE INTERFACE
-         f_WR_EN : in std_logic;
-        f_WR_DT : in std_logic_vector (f_WIDTH-1 downto 0);
-         f_FULL_FIFO : out std_logic;
-        -- FIFO READ INTERFACE
-         f_RD_EN : in std_logic;
-         f_RD_DT_128 : out std_logic_vector (f_DEPTH*f_WIDTH-1 downto 0);
-         f_EMPTY_FIFO : out std_logic);
+        i_rst_sync : in std_logic;
+        i_clk      : in std_logic;
+     
+        -- FIFO Write Interface
+        i_wr_en   : in  std_logic;
+        i_wr_data : in  std_logic_vector(g_WIDTH-1 downto 0);
+        o_full    : out std_logic;
+     
+        -- FIFO Read Interface
+        i_rd_en   : in  std_logic;
+        o_rd_data : out std_logic_vector(g_WIDTH-1 downto 0);
+        f_RD_DT_128 : out std_logic_vector ((g_WIDTH * g_DEPTH) - 1 downto 0) := (others => '0');
+        o_empty   : out std_logic);
    end component FIFO;
    
   
@@ -108,7 +111,7 @@ begin  -- architecture str
     port map (
       clock         => CLK100MHZ,
       uart_rx       => uart_txd_in,
-      valid         => data_valid,
+      valid         => x_data_valid,
       received_data => received_data);
 
   NN : myproject
@@ -125,19 +128,19 @@ begin  -- architecture str
         layer13_out_4_V => layer13_out_4_V);
   FIFO_1 : FIFO
     port map (
-        f_CLK => CLK100MHZ,
-        f_RST => reset,
-        f_WR_EN => '1',
-        f_WR_DT => f_WR_DT,
-        f_RD_EN => '1',
-        f_FULL_FIFO => f_FULL_FIFO,
+        i_clk => CLK100MHZ,
+        i_rst_sync => reset,
+        i_wr_en => '1',
+        i_wr_data => f_WR_DT,
+        i_rd_en => '1',
+        o_full => f_FULL_FIFO,
         f_RD_DT_128 => f_RD_DT_128,
-        f_EMPTY_FIFO => f_EMPTY_FIFO);
+        o_empty => f_EMPTY_FIFO);
   TX_1 : uart_transmitter
     port map (
       clock        => CLK100MHZ,
       data_to_send => data_to_send,
-      data_valid   => data_valid,
+      data_valid   => x_data_valid,
       busy         => busy,
       uart_tx      => uart_rxd_out);
 

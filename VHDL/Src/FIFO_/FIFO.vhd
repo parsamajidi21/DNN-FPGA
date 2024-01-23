@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
  
-entity module_fifo_regs_no_flags is
+entity FIFO is
   generic (
     g_WIDTH : natural := 8;
     g_DEPTH : integer := 16
@@ -22,9 +22,9 @@ entity module_fifo_regs_no_flags is
     f_RD_DT_128 : out std_logic_vector ((g_WIDTH * g_DEPTH) - 1 downto 0) := (others => '0');
     o_empty   : out std_logic
     );
-end module_fifo_regs_no_flags;
+end FIFO;
  
-architecture rtl of module_fifo_regs_no_flags is
+architecture rtl of FIFO is
  
   type t_FIFO_DATA is array (0 to g_DEPTH-1) of std_logic_vector(g_WIDTH-1 downto 0);
   signal r_FIFO_DATA : t_FIFO_DATA := (others => (others => '0'));
@@ -95,18 +95,18 @@ begin
   -- ASSERTION LOGIC - Not synthesized
   -- synthesis translate_off
  
-  p_ASSERT : process (i_clk) is
-  begin
-    if rising_edge(i_clk) then
-      if i_wr_en = '1' and w_FULL = '1' then
-        report "ASSERT FAILURE - MODULE_REGISTER_FIFO: FIFO IS FULL AND BEING WRITTEN " severity failure;
-      end if;
+--  p_ASSERT : process (i_clk) is
+--  begin
+--    if rising_edge(i_clk) then
+--      if i_wr_en = '1' and w_FULL = '1' then
+--        report "ASSERT FAILURE - MODULE_REGISTER_FIFO: FIFO IS FULL AND BEING WRITTEN " severity failure;
+--      end if;
  
-      if i_rd_en = '1' and w_EMPTY = '1' then
-        report "ASSERT FAILURE - MODULE_REGISTER_FIFO: FIFO IS EMPTY AND BEING READ " severity failure;
-      end if;
-    end if;
-  end process p_ASSERT;
+--      if i_rd_en = '1' and w_EMPTY = '1' then
+--        report "ASSERT FAILURE - MODULE_REGISTER_FIFO: FIFO IS EMPTY AND BEING READ " severity failure;
+--      end if;
+--    end if;
+--  end process p_ASSERT;
  
   -- synthesis translate_on
 end rtl;

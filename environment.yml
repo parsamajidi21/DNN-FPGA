@@ -1,4 +1,4 @@
-name: hls4ml-tutorial
+name: neural-network-fpga
 channels:
   - conda-forge
 dependencies:

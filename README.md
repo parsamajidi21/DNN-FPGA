@@ -28,7 +28,7 @@ feasible or maybe it is better to tackle the first option.
 - The Python environment used for the tutorials is specified in the environment.yml file. It can be setup like:
 ```
 conda env create -f environment.yml
-conda activate FPGA_NN
+conda activate neural-network-fpga
 ```
 
 ### Flow of Project
