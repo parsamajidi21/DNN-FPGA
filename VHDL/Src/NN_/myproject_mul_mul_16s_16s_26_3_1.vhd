@@ -3,7 +3,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity myproject_mul_mul_16s_16s_26_3_1_DSP48_3 is
+entity myproject_mul_mul_16s_16s_26_3_1_DSP48_4 is
 port (
     clk: in std_logic;
     rst: in std_logic;
@@ -14,7 +14,7 @@ port (
 
 end entity;
 
-architecture behav of myproject_mul_mul_16s_16s_26_3_1_DSP48_3 is
+architecture behav of myproject_mul_mul_16s_16s_26_3_1_DSP48_4 is
     signal a_cvt: signed(16 - 1 downto 0);
     signal b_cvt: signed(16 - 1 downto 0);
     signal p_cvt: signed(26 - 1 downto 0);
@@ -63,7 +63,7 @@ entity myproject_mul_mul_16s_16s_26_3_1 is
 end entity;
 
 architecture arch of myproject_mul_mul_16s_16s_26_3_1 is
-    component myproject_mul_mul_16s_16s_26_3_1_DSP48_3 is
+    component myproject_mul_mul_16s_16s_26_3_1_DSP48_4 is
         port (
             clk : IN STD_LOGIC;
             rst : IN STD_LOGIC;
@@ -76,7 +76,7 @@ architecture arch of myproject_mul_mul_16s_16s_26_3_1 is
 
 
 begin
-    myproject_mul_mul_16s_16s_26_3_1_DSP48_3_U :  component myproject_mul_mul_16s_16s_26_3_1_DSP48_3
+    myproject_mul_mul_16s_16s_26_3_1_DSP48_4_U :  component myproject_mul_mul_16s_16s_26_3_1_DSP48_4
     port map (
         clk => clk,
         rst => reset,

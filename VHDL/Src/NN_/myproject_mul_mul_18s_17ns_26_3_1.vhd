@@ -3,30 +3,30 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity myproject_mul_mul_15ns_9s_24_3_1_DSP48_2 is
+entity myproject_mul_mul_18s_17ns_26_3_1_DSP48_7 is
 port (
     clk: in std_logic;
     rst: in std_logic;
     ce: in std_logic;
-    a: in std_logic_vector(15 - 1 downto 0);
-    b: in std_logic_vector(9 - 1 downto 0);
-    p: out std_logic_vector(24 - 1 downto 0));
+    a: in std_logic_vector(18 - 1 downto 0);
+    b: in std_logic_vector(17 - 1 downto 0);
+    p: out std_logic_vector(26 - 1 downto 0));
 
 end entity;
 
-architecture behav of myproject_mul_mul_15ns_9s_24_3_1_DSP48_2 is
-    signal a_cvt: unsigned(15 - 1 downto 0);
-    signal b_cvt: signed(9 - 1 downto 0);
-    signal p_cvt: signed(24 - 1 downto 0);
+architecture behav of myproject_mul_mul_18s_17ns_26_3_1_DSP48_7 is
+    signal a_cvt: signed(18 - 1 downto 0);
+    signal b_cvt: unsigned(17 - 1 downto 0);
+    signal p_cvt: signed(26 - 1 downto 0);
 
-    signal p_reg: signed(24 - 1 downto 0);
+    signal p_reg: signed(26 - 1 downto 0);
 
-    signal a_reg: unsigned(15 - 1 downto 0) ; 
-    signal b_reg: signed(9 - 1 downto 0) ; 
+    signal a_reg: signed(18 - 1 downto 0) ; 
+    signal b_reg: unsigned(17 - 1 downto 0) ; 
 begin
 
-    a_cvt <= unsigned(a);
-    b_cvt <= signed(b);
+    a_cvt <= signed(a);
+    b_cvt <= unsigned(b);
 
     process(clk)
     begin
@@ -39,14 +39,14 @@ begin
         end if;
     end process;
 
-    p_cvt <= signed (resize(unsigned (signed ('0' & a_reg) * signed (b_reg)), 24));
+    p_cvt <= signed (resize(unsigned (signed (a_reg) * signed ('0' & b_reg)), 26));
     p <= std_logic_vector(p_reg);
 
 end architecture;
 Library IEEE;
 use IEEE.std_logic_1164.all;
 
-entity myproject_mul_mul_15ns_9s_24_3_1 is
+entity myproject_mul_mul_18s_17ns_26_3_1 is
     generic (
         ID : INTEGER;
         NUM_STAGE : INTEGER;
@@ -62,8 +62,8 @@ entity myproject_mul_mul_15ns_9s_24_3_1 is
         dout : OUT STD_LOGIC_VECTOR(dout_WIDTH - 1 DOWNTO 0));
 end entity;
 
-architecture arch of myproject_mul_mul_15ns_9s_24_3_1 is
-    component myproject_mul_mul_15ns_9s_24_3_1_DSP48_2 is
+architecture arch of myproject_mul_mul_18s_17ns_26_3_1 is
+    component myproject_mul_mul_18s_17ns_26_3_1_DSP48_7 is
         port (
             clk : IN STD_LOGIC;
             rst : IN STD_LOGIC;
@@ -76,7 +76,7 @@ architecture arch of myproject_mul_mul_15ns_9s_24_3_1 is
 
 
 begin
-    myproject_mul_mul_15ns_9s_24_3_1_DSP48_2_U :  component myproject_mul_mul_15ns_9s_24_3_1_DSP48_2
+    myproject_mul_mul_18s_17ns_26_3_1_DSP48_7_U :  component myproject_mul_mul_18s_17ns_26_3_1_DSP48_7
     port map (
         clk => clk,
         rst => reset,
