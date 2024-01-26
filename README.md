@@ -31,29 +31,49 @@ conda env create -f environment.yml
 conda activate neural-network-fpga
 ```
 
-### Flow of Project
+### Neural Networks
+Machine learning is a branch of artificial intelligence (AI) where algorithms and data are used to create a system that can perform a certain task. The accuracy of the system is slowly improved as more data is processed, referred to as training. Once accurate enough this system can be considered trained and then deployed in other environments. Here the same learned algorithm is used to infer the statistical probability of an outcome. This is referred to as inference.
 
-![Diagram Image](./image/Drawing.png)
+Neural networks form the foundation of most machine learning tasks. These consist of multiple compute layers whose interactions are based on coefficients learned during training.  This whitepaper focuses on the inference of neural networks on FPGA devices, illustrating their strengths and weaknesses.
 
+
+### FPGA Capabilities?
+At the heart of neural networks are huge numbers of multiply accumulate calculations. These calculations simulate the interaction of thousands of neurons, producing a statistical likelihood of something occurring. For image recognition this is a confidence factor that the network is observing a particular object. It can of course be wrong. For example, humans regularly see human faces in inanimate objects! Any system will therefore require a certain tolerance to incorrect results. The statistical nature of these results provides opportunities to vary the dynamic range of the computations, so long as the final answer remains within a satisfactory level of accuracy defined by the tolerance of the application. Consequentially inference provides opportunities to be creative with data types used.
+
+Data widths can often be reduced to 8-bit integers and in some cases can be decreased to a single bit. FPGAs can be configured to process data types of almost any size, with little or no loss in compute utilization.
+
+In respect to neural network inference, ASICs, CPUs, GPUs and FPGAs have their advantages and disadvantages. Custom chips (ASICs) offer the highest performance and lowest cost, but only for targeted algorithms – there is no flexibility.  In contrast, CPUs offer the greatest programming flexibility, but at lower compute throughput. GPU performance is typically much higher than a CPU and improved further when using a large batch number, i.e. processing many queries in parallel. In latency critical real-time systems, it is not always possible to batch input data. This is one area where FPGAs are somewhat unique, allowing neural networks to be optimized for a single query, while still achieving a high-level compute resource utilization. When an ASIC does not exist, this makes FPGAs ideal for latency critical neural network processing.
 
 ### HLS-High Level Synthesis
 
 - What is it ?
-High-level synthesis (HLS), sometimes referred to as C synthesis, electronic system-level (ESL) synthesis, algorithmic synthesis, or behavioral synthesis, is an automated design process that takes an abstract behavioral specification of a digital system and finds a register-transfer level structure that realizes the given behavior.
+	- High-level synthesis (HLS), sometimes referred to as C synthesis, electronic system-level (ESL) synthesis, algorithmic synthesis, or behavioral synthesis, is an automated design process that takes an abstract behavioral specification of a digital system and finds a register-transfer level structure that realizes the given behavior.
 
 - Why to use it ?
 	- Productivity: Lower design complexity and faster simulation speed
 	- Portability: Single source then multiple implementations
 	- Quality: Quicker design space exploration then higher quality
+### Typical C/C++ Constructs to RTL Mapping
 
-C/C++ Constructs	RTL Components
-----------------      ----------------
-  Functions                Modules
-  Arguments            Input/output ports
-  Operators             Functional units
-   Scalars             Wires or registers
-   Arrays                  Memories
- Control flows          Control logics
+|C/C++ Constructs|   RTL Components  |	
+|----------------|-------------------|      
+|  Functions     |    Modules        |
+|  Arguments     | Input/output ports|
+|  Operators     | Functional units  |
+|   Scalars      |Wires or registers |
+|   Arrays       |   Memories 	     |
+| Control flows  | Control logics    |
+### A Typical HLS Flow
+
+![HLS Flow](./image/HLS_Floww.png)
+
+##### Scheduling
+- Introduces clock boundaries to untimed (or partially timed) input specification
+##### Piplining
+- A performance optimization in high-level synthesis (HLS), which extracts loop-level parallelism by executing multiple loop iterations concurrently using the same hardware.
+##### Binding
+- Maps operations, variables, and/or data transfers to the available resources
+
 #### General Workflow to use HLS
 
 - Problem
@@ -78,7 +98,9 @@ The following figure shows the behavior of the block-level handshake signals cre
   <img src="./image/ksy1542323312067.image" alt="Behavior of ap_ctrl_chain Interface">
 </div>
 
-### Neural Network
+### Flow of Project
+
+![Diagram Image](./image/Drawing.png)
 
 ### UART Implementation
 
@@ -112,3 +134,5 @@ pip install --upgrade notebook==6.4.12
 [What is a FIFO in an FPGA](https://nandland.com/lesson-8-what-is-a-fifo/What%20is%20a%20FIFO%20in%20an%20FPGA)
 
 [Block Level Control Protocols](https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/Block-Level-Control-Protocols) 
+
+[FPGA Neural Networks](https://www.bittware.com/resources/fpga-neural-networks)
