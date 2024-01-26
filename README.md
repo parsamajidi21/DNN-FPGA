@@ -38,8 +38,22 @@ conda activate neural-network-fpga
 
 ### HLS-High Level Synthesis
 
+- What is it ?
 High-level synthesis (HLS), sometimes referred to as C synthesis, electronic system-level (ESL) synthesis, algorithmic synthesis, or behavioral synthesis, is an automated design process that takes an abstract behavioral specification of a digital system and finds a register-transfer level structure that realizes the given behavior.
 
+- Why to use it ?
+	- Productivity: Lower design complexity and faster simulation speed
+	- Portability: Single source then multiple implementations
+	- Quality: Quicker design space exploration then higher quality
+
+C/C++ Constructs	RTL Components
+----------------      ----------------
+  Functions                Modules
+  Arguments            Input/output ports
+  Operators             Functional units
+   Scalars             Wires or registers
+   Arrays                  Memories
+ Control flows          Control logics
 #### General Workflow to use HLS
 
 - Problem
